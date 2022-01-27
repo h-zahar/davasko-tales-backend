@@ -23,7 +23,7 @@ const run = async() => {
         const database = client.db(process.env.DB_NAME);
   
         const userCollection = database.collection(process.env.DB_COLLECTION_USER);
-        const postCollection = database.collection(process.env.DB_COLLECTION_BLOG);
+        const blogCollection = database.collection(process.env.DB_COLLECTION_BLOG);
 
         // Requests
         app.post('/users', async (req, res) => {
@@ -70,6 +70,86 @@ const run = async() => {
               res.send({});
             }
     
+          });
+
+          app.get('/blogs', async (req, res) => {
+            // const query = {};
+            const query = { isApproved: true };
+            const cursor = blogCollection.find(query);
+    
+            const results = await cursor.toArray();
+            
+            if(results) {
+              res.json(results);
+            }
+    
+            else {
+              res.send([]);
+            }
+    
+          });
+
+          app.get('/blogs/:email', async (req, res) => {
+            const { email } = req.params;
+            const query = { email: email };
+            
+            const cursor = blogCollection.find(query);
+    
+            const results = await cursor.toArray();
+    
+            if(results) {
+                res.json(results);
+            }
+    
+            else {
+                res.send([]);
+            }
+  
+          });
+
+          app.put('/blogs', async (req, res) => {
+            const updated = req.body;
+    
+            const filter = { _id: ObjectId(updated._id) };
+    
+            let updateDoc = {};
+            if(updated.isApproved)
+            {
+             updated.isApproved = false;
+             updateDoc = {
+                 $set: {
+                     isApproved: false
+                 },
+             };
+            }
+    
+            else {
+                updated.isApproved = true;
+                updateDoc = {
+                    $set: {
+                        isApproved: true
+                    },
+                };
+               }
+               const result = await blogCollection.updateOne(filter, updateDoc);
+    
+               if (result) {
+                res.json(updated);
+               }
+          });
+
+          app.delete('/blogs/:id', async (req, res) => {
+            const { id } = req.params;
+            const query = { _id: ObjectId(id) };
+    
+            const result = await blogCollection.deleteOne(query);
+            res.json(result);
+          });
+    
+          app.post('/blogs', async (req, res) => {
+            const newOrder = req.body;
+            const result = await blogCollection.insertOne(newOrder);
+            res.json(result);
           });
 
 
