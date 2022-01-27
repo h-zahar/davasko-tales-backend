@@ -91,7 +91,7 @@ const run = async() => {
 
           app.get('/blogs/:email', async (req, res) => {
             const { email } = req.params;
-            const query = { email: email };
+            const query = { traveler_email: email };
             
             const cursor = blogCollection.find(query);
     
@@ -104,6 +104,22 @@ const run = async() => {
             else {
                 res.send([]);
             }
+  
+          });
+
+          app.get('/blogs/:id', async (req, res) => {
+            const { id } = req.params;
+            const query = { _id: id };
+            
+            const cursor = blogCollection.findOne(query);
+    
+            if(cursor) {
+                res.json(cursor);
+              }
+      
+              else {
+                res.send({});
+              }
   
           });
 
