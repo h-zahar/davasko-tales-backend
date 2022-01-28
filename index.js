@@ -107,19 +107,19 @@ const run = async() => {
   
           });
 
-          app.get('/blogs/:id', async (req, res) => {
+          app.get('/single/:id', async (req, res) => {
             const { id } = req.params;
-            const query = { _id: id };
+            const query = { _id: ObjectId(id) };
             
-            const matchedBlog = blogCollection.findOne(query);
-    
+            const matchedBlog = await blogCollection.findOne(query);
+            
             if(matchedBlog) {
-                res.json(matchedBlog);
-              }
+              res.json(matchedBlog);
+            }
       
-              else {
-                res.send({});
-              }
+            else {
+              res.send({});
+            }
   
           });
 
