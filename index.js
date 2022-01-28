@@ -111,10 +111,10 @@ const run = async() => {
             const { id } = req.params;
             const query = { _id: id };
             
-            const cursor = blogCollection.findOne(query);
+            const matchedBlog = blogCollection.findOne(query);
     
-            if(cursor) {
-                res.json(cursor);
+            if(matchedBlog) {
+                res.json(matchedBlog);
               }
       
               else {
