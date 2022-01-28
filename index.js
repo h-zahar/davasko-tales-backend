@@ -72,6 +72,22 @@ const run = async() => {
     
           });
 
+          app.get('/all-blogs', async (req, res) => {
+            const query = {};
+            const cursor = blogCollection.find(query);
+    
+            const results = await cursor.toArray();
+            
+            if(results) {
+              res.json(results);
+            }
+    
+            else {
+              res.send([]);
+            }
+
+          });
+
           app.get('/blogs', async (req, res) => {
             // const query = {};
             const query = { isApproved: true };
