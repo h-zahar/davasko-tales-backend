@@ -92,15 +92,30 @@ const run = async() => {
             // const query = {};
             const query = { isApproved: true };
             const cursor = blogCollection.find(query);
-    
-            const results = await cursor.toArray();
+            const count = await cursor.count();
             
-            if(results) {
-              res.json(results);
+            const page = req.query.page;
+            const size = parseInt(req.query.size);
+
+            let blogs;
+
+            if (page) {
+              blogs = await cursor.skip(page * size).limit(size).toArray();
+            }
+            else {
+              blogs = await cursor.toArray();
+            }
+
+            
+            if(count) {
+              res.send({
+                count,
+                blogs
+              });
             }
     
             else {
-              res.send([]);
+              res.send({});
             }
     
           });
